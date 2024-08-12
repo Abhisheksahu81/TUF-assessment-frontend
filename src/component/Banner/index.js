@@ -12,8 +12,12 @@ export default function Banner() {
         getBanner().then(
             res => {
                 setLoading(false);
-                setData(res);
-                console.log(res);
+                if (res.error) {
+
+                }
+                else {
+                    setData(res);
+                }
             }
         ).catch((error) => {
             setLoading(false);
@@ -25,21 +29,37 @@ export default function Banner() {
         getData();
     }, [])
 
+    const handleOnclick = () => {
+        window.location.href = data?.url;
+    }
+
     return (
         <div className={styles.main}>
-            <div className={styles.container}>
-                <div className={styles.leftDiv}>
-                    <div className={styles.heading}>{data?.heading}</div>
-                    <div className={styles.description}>{data?.description}</div>
-                    <button className={styles.btn}>Go to URL</button>
-                </div>
-                <div className={styles.rightDiv}>
-                    {data?.time &&
-                        
-                        <Timer deadline={data?.time} />
+            {!loading ?
+                <>
+                    {data ?
+                            <div className={styles.container}>
+                                <div className={styles.leftDiv}>
+                                    <div className={styles.heading}>{data?.heading}</div>
+                                    <div className={styles.description}>{data?.description}</div>
+                                    <button className={styles.btn} onClick={handleOnclick}>Go to URL</button>
+                                </div>
+                                <div className={styles.rightDiv}>
+                                    <Timer deadline={data?.time} />
+                                </div>
+                            </div>
+                            :
+                            <div>
+                                Banner's Visibility is Off
+                            </div>
                     }
+                </>
+                :
+                <div>
+                    Loading...
                 </div>
-            </div>
+            }
+
         </div>
     )
 }
